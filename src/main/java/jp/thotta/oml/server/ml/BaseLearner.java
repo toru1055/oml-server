@@ -22,6 +22,10 @@ public abstract class BaseLearner implements Learner {
     return LabelFactory.createLabel(labelMode);
   }
 
+  public int getModelId() {
+    return this.modelId;
+  }
+
   abstract public void train(Label label, List<Feature> features);
   abstract public Label predict(List<Feature> features);
   abstract public Double scoring(List<Feature> features);

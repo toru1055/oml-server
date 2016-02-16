@@ -9,6 +9,11 @@ import java.util.List;
  */
 public interface Learner {
   /**
+   * モデル番号取得.
+   */
+  public int getModelId();
+
+  /**
    * １レコード学習.
    * @param label 教師ラベル
    * @param features 特徴ベクトル

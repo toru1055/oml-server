@@ -1,11 +1,21 @@
 package jp.thotta.oml.server.admin;
 
+import java.io.File;
+
 /**
  * パス管理のUtilityクラス.
  */
 public class PathManager {
   public static void init() {
-    // ディレクトリ作成やファイル作成.
+    try {
+      File aDir = new File(attributesDirectory());
+      File mDir = new File(modelDirectory());
+      aDir.mkdirs();
+      mDir.mkdirs();
+    } catch(Exception e) {
+      e.printStackTrace();
+      System.exit(1);
+    }
   }
 
   public static String baseDirectory() {
@@ -17,9 +27,7 @@ public class PathManager {
   }
 
   public static String attributesFile(int modelId) {
-    return attributesDirectory() + "/" +
-      String.valueOf(modelId) +
-      ".properties";
+    return attributesDirectory() + "/" + String.valueOf(modelId);
   }
 
   public static String modelDirectory() {
@@ -27,11 +35,6 @@ public class PathManager {
   }
 
   public static String modelFile(int modelId) {
-    return modelDirectory() + "/" + String.valueOf(modelId) +
-      ".properties";
-  }
-
-  public static String modelIdManagerFile() {
-    return baseDirectory() + "/" + "model-id.properties";
+    return modelDirectory() + "/" + String.valueOf(modelId);
   }
 }

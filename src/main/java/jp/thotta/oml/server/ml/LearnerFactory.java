@@ -2,6 +2,7 @@ package jp.thotta.oml.server.ml;
 
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
+import java.io.File;
 import java.util.Properties;
 import java.util.HashMap;
 import jp.thotta.oml.server.input.LabelFactory;
@@ -32,8 +33,6 @@ public class LearnerFactory {
     Learner learner = newLearner(modelId, labelMode, learnerType);
     // 属性ファイル名を決定し、保存
     saveAttributes(modelId, labelMode, learnerType);
-    // model管理ファイルに保存
-    saveModelIdManagerFile(modelId);
     return learner;
   }
 
@@ -75,19 +74,6 @@ public class LearnerFactory {
     }
   }
 
-  static void saveModelIdManagerFile(int modelId) {
-    String filename = PathManager.modelIdManagerFile();
-    Properties conf = new Properties();
-    conf.setProperty(String.valueOf(modelId), "active");
-    try {
-      conf.store(new FileOutputStream(filename),
-          "LearnerFactory.saveModelIdManagerFile");
-    } catch(Exception e) {
-      e.printStackTrace();
-      System.exit(1);
-    }
-  }
-
   static Learner newLearner(int modelId,
                             int labelMode,
                             int learnerType) {
@@ -107,20 +93,14 @@ public class LearnerFactory {
 
   static int newModelId() {
     int newId = 0;
-    String filename = PathManager.modelIdManagerFile();
-    Properties conf = new Properties();
-    try {
-      conf.load(new FileInputStream(filename));
-      for(String k : conf.stringPropertyNames()) {
-        int kid = Integer.parseInt(k);
-        if(kid > newId) {
-          newId = kid;
-        }
+    File aDir = new File(PathManager.attributesDirectory());
+    File[] aFiles = aDir.listFiles();
+    for(File f : aFiles) {
+      String filename = f.getName();
+      int modelId = Integer.parseInt(filename);
+      if(modelId > newId) {
+        newId = modelId;
       }
-    } catch(Exception e) {
-      System.err.println("Cannot open " + filename + ".");
-      e.printStackTrace();
-      System.exit(1);
     }
     return (newId + 1);
   }

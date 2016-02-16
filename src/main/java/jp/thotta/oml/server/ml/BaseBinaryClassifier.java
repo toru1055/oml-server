@@ -1,10 +1,12 @@
 package jp.thotta.oml.server.ml;
 
-import java.util.Properties;
 import java.util.HashMap;
 import java.util.List;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
+import java.io.File;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.BufferedReader;
 import jp.thotta.oml.server.input.Feature;
 import jp.thotta.oml.server.input.Label;
 import jp.thotta.oml.server.input.LabelFactory;
@@ -37,11 +39,17 @@ public abstract class BaseBinaryClassifier extends BaseLearner {
 
   public void read() {
     String filename = PathManager.modelFile(this.modelId);
-    Properties p = new Properties();
+    File file = new File(filename);
     try {
-      p.load(new FileInputStream(filename));
+      BufferedReader br = new BufferedReader(new FileReader(file));
+      String line = "";
+      while ((line = br.readLine()) != null) {
+        String[] s = line.split("\t", 2);
+        String k = s[0];
+        Double v = Double.parseDouble(s[1]);
+        this.w.put(k, v);
+      }
     } catch(Exception e) {
-      System.err.println("Cannot open " + filename + ".");
       e.printStackTrace();
       System.exit(1);
     }
@@ -49,13 +57,14 @@ public abstract class BaseBinaryClassifier extends BaseLearner {
 
   public void save() {
     String filename = PathManager.modelFile(this.modelId);
-    Properties p = new Properties();
-    for(String k : w.keySet()) {
-      p.setProperty(k, String.valueOf(w.get(k)));
-    }
+    File file = new File(filename);
     try {
-      p.store(new FileOutputStream(filename),
-          "BaseBinaryClassifier.save");
+      BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+      for(String k : this.w.keySet()) {
+        bw.write(k + "\t" + this.w.get(k));
+        bw.newLine();
+      }
+      bw.close();
     } catch(Exception e) {
       e.printStackTrace();
       System.exit(1);
