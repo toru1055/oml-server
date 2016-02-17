@@ -6,12 +6,16 @@ import jp.thotta.oml.server.admin.PathManager;
 import jp.thotta.oml.server.input.*;
 
 public class LearnerTest extends TestCase {
-  public void testLearnerFactory() {
+  int modelId;
+  protected void setUp() {
     PathManager.init();
     Learner learner = LearnerFactory.createLearner(
         LabelFactory.BINARY_MODE_TEXT,
         LearnerFactory.SGD_TYPE_TEXT);
-    int modelId = learner.getModelId();
+    modelId = learner.getModelId();
+  }
+
+  public void testLearnerFactory() {
     Learner l2 = LearnerFactory.readLearner(modelId);
     BinaryClassLabel p = new BinaryClassLabel();
     BinaryClassLabel n = new BinaryClassLabel();
@@ -42,6 +46,9 @@ public class LearnerTest extends TestCase {
     r2.add(new Feature("2", 0.5));
     r2.add(new Feature("3", 1.0));
     assertTrue(!l3.predict(r2).isPositive());
+  }
+
+  protected void tearDown() {
     LearnerFactory.deleteLearner(modelId);
   }
 }
