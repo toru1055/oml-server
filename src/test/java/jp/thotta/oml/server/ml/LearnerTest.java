@@ -8,6 +8,7 @@ import jp.thotta.oml.server.input.*;
 public class LearnerTest extends TestCase {
   int modelId;
   protected void setUp() {
+    PathManager.setBase("data");
     PathManager.init();
     Learner learner = LearnerFactory.createLearner(
         LabelFactory.BINARY_MODE_TEXT,

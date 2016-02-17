@@ -6,6 +6,12 @@ import java.io.File;
  * パス管理のUtilityクラス.
  */
 public class PathManager {
+  static String basePath = "/var/db/oml";
+
+  public static void setBase(String path) {
+    basePath = path;
+  }
+
   public static void init() {
     try {
       File aDir = new File(attributesDirectory());
@@ -19,7 +25,7 @@ public class PathManager {
   }
 
   public static String baseDirectory() {
-    return "data";
+    return basePath;
   }
 
   public static String attributesDirectory() {
