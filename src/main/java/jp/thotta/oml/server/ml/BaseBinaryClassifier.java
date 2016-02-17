@@ -25,16 +25,10 @@ public abstract class BaseBinaryClassifier extends BaseLearner {
   }
 
   /**
-   * 特徴ベクトルに対応する重みベクトルを初期化.
-   * 空の重みのみをランダムで埋める.
+   * w.getしたときに、なければrandomを返す
    */
-  protected void initWeights(List<Feature> features) {
-    for(Feature f : features) {
-      String k = f.key();
-      if(!w.containsKey(k)) {
-        w.put(k, Math.random());
-      }
-    }
+  protected double wget(String k) {
+    return w.containsKey(k) ? w.get(k) : Math.random();
   }
 
   public void read() {

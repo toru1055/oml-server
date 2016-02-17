@@ -25,4 +25,8 @@ public class Feature {
   public Double value() {
     return v;
   }
+
+  public String toString() {
+    return String.format("%s:%f", k, v);
+  }
 }

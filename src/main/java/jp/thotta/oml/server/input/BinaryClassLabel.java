@@ -20,6 +20,10 @@ public class BinaryClassLabel implements Label {
     return LabelFactory.BINARY_MODE;
   }
 
+  public void setLabel(boolean l) {
+    this.label = l;
+  }
+
   public String getLabel() {
     if(label == null) {
       return null;

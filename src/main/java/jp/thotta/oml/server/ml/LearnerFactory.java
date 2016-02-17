@@ -58,6 +58,18 @@ public class LearnerFactory {
     return newLearner(modelId, labelMode, learnerType);
   }
 
+  /**
+   * 学習器を削除.
+   */
+  public static void deleteLearner(int modelId) {
+    String afilename = PathManager.attributesFile(modelId);
+    String mfilename = PathManager.modelFile(modelId);
+    File afile = new File(afilename);
+    File mfile = new File(mfilename);
+    afile.delete();
+    mfile.delete();
+  }
+
   static void saveAttributes(int modelId, 
                              int labelMode,
                              int learnerType) {

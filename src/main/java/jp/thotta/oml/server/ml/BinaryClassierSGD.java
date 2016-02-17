@@ -24,7 +24,7 @@ public class BinaryClassierSGD
   public Double scoring(List<Feature> x) {
     double wx = 0.0;
     for(Feature xi : x) {
-      wx += w.get(xi.key()) * xi.value();
+      wx += wget(xi.key()) * xi.value();
     }
     return sigmoid(wx);
   }
@@ -33,22 +33,22 @@ public class BinaryClassierSGD
     double p = scoring(x);
     BinaryClassLabel l = new BinaryClassLabel();
     if(p > 0.5) {
-      l.parse(BinaryClassLabel.POSITIVE_LABEL);
+      l.setLabel(true);
     } else {
-      l.parse(BinaryClassLabel.NEGATIVE_LABEL);
+      l.setLabel(false);
     }
     return l;
   }
 
   public void train(Label label, List<Feature> x) {
-    initWeights(x);
-    int y = label.isPositive()? 1 : 0;
+    double y = label.isPositive()? 1.0 : 0.0;
     double p = scoring(x);
     for(Feature xi : x) {
       String k = xi.key();
       Double v = xi.value();
-      v -= (eta * (p - y) * v);
-      w.put(k, v);
+      Double wi = wget(k);
+      wi =  wi - (eta * (p - y) * v);
+      w.put(k, wi);
     }
   }
 
