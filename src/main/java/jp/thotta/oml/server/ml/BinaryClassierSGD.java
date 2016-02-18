@@ -1,8 +1,8 @@
 package jp.thotta.oml.server.ml;
 
-import jp.thotta.oml.server.input.Feature;
-import jp.thotta.oml.server.input.Label;
-import jp.thotta.oml.server.input.BinaryClassLabel;
+import jp.thotta.oml.server.io.Feature;
+import jp.thotta.oml.server.io.Label;
+import jp.thotta.oml.server.io.BinaryClassLabel;
 import java.util.List;
 
 /**

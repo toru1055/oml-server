@@ -1,4 +1,4 @@
-package jp.thotta.oml.server.input;
+package jp.thotta.oml.server.io;
 
 /**
  * 教師データのラベル用インターフェイス.

@@ -1,4 +1,4 @@
-package jp.thotta.oml.server.input;
+package jp.thotta.oml.server.io;
 
 /**
  * 多クラス分類用のラベル.

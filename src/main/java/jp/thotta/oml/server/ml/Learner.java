@@ -1,7 +1,7 @@
 package jp.thotta.oml.server.ml;
 
-import jp.thotta.oml.server.input.Feature;
-import jp.thotta.oml.server.input.Label;
+import jp.thotta.oml.server.io.Feature;
+import jp.thotta.oml.server.io.Label;
 import java.util.List;
 
 /**
