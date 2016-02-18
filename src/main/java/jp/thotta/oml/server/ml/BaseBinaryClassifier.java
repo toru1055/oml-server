@@ -28,7 +28,10 @@ public abstract class BaseBinaryClassifier extends BaseLearner {
    * w.getしたときに、なければrandomを返す
    */
   protected double wget(String k) {
-    return w.containsKey(k) ? w.get(k) : Math.random();
+    if(!w.containsKey(k)) {
+      w.put(k, Math.random());
+    }
+    return w.get(k);
   }
 
   public void read() {
