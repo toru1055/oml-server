@@ -16,6 +16,10 @@ public class BinaryClassLabel implements Label {
     }
   }
 
+  public String getText() {
+    return label ? POSITIVE_LABEL : NEGATIVE_LABEL;
+  }
+
   public int getLabelMode() {
     return LabelFactory.BINARY_MODE;
   }

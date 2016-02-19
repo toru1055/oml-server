@@ -25,4 +25,8 @@ public class MultiClassLabel implements Label {
   public Boolean isPositive() {
     return null;
   }
+
+  public String getText() {
+    return label;
+  }
 }

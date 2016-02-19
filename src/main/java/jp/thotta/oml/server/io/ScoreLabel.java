@@ -10,6 +10,10 @@ public class ScoreLabel implements Label {
     score = Double.parseDouble(labelText);
   }
 
+  public String getText() {
+    return String.valueOf(score);
+  }
+
   public int getLabelMode() {
     return LabelFactory.SCORE_MODE;
   }

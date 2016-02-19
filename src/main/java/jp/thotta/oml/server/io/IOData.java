@@ -4,8 +4,8 @@ package jp.thotta.oml.server.io;
  * json化する入出力用データ.
  */
 public class IOData {
-  String label;
-  String features;
+  public String label;
+  public String features;
 
   public IOData(String label, String features) {
     this.label = label;

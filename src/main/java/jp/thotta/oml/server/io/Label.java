@@ -30,4 +30,9 @@ public interface Label {
    * ラベルタイプを取得.
    */
   public int getLabelMode();
+
+  /**
+   * ラベルテキスト取得.
+   */
+  public String getText();
 }
