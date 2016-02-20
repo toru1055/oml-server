@@ -1,6 +1,7 @@
 package jp.thotta.oml.server.admin;
 
 import java.io.File;
+import java.lang.SecurityException;
 
 /**
  * パス管理のUtilityクラス.
@@ -12,12 +13,34 @@ public class PathManager {
     basePath = path;
   }
 
+  static boolean initDirectory(File dir) {
+    if(dir.exists()) {
+      if(dir.isDirectory()) {
+        return true;
+      } else {
+        System.err.println(dir + " is not directory.");
+        return false;
+      }
+    } else {
+      if(dir.mkdirs()) {
+        return true;
+      } else {
+        System.err.println(dir + ": Can't make directory.");
+        return false;
+      }
+    }
+  }
+
   public static void init() {
     try {
       File aDir = new File(attributesDirectory());
       File mDir = new File(modelDirectory());
-      aDir.mkdirs();
-      mDir.mkdirs();
+      if(!initDirectory(aDir) || !initDirectory(mDir)) {
+        System.exit(1);
+      }
+    } catch(SecurityException e) {
+      e.printStackTrace();
+      System.exit(1);
     } catch(Exception e) {
       e.printStackTrace();
       System.exit(1);
