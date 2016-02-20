@@ -9,7 +9,7 @@ import jp.thotta.oml.server.io.*;
  * バッチ処理で学習するサービス.
  */
 public class TrainBatchService extends BatchService implements Runnable {
-  public static final int DEFAULT_PORT = 9001;
+  public static final int PORT = 9001;
 
   public TrainBatchService(Socket socket) {
     super(socket);
@@ -17,6 +17,10 @@ public class TrainBatchService extends BatchService implements Runnable {
 
   public Label exec(Label label, List<Feature> x) {
     this.learner.train(label, x);
-    return null;
+    return this.learner.createLabelInstance();
+  }
+
+  public void finalizeService() {
+    this.learner.save();
   }
 }

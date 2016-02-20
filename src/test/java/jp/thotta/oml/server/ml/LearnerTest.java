@@ -7,6 +7,7 @@ import jp.thotta.oml.server.io.*;
 
 public class LearnerTest extends TestCase {
   int modelId;
+
   protected void setUp() {
     PathManager.setBase("data");
     PathManager.init();

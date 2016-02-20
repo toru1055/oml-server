@@ -17,6 +17,9 @@ public class BinaryClassLabel implements Label {
   }
 
   public String getText() {
+    if(label == null) {
+      return null;
+    }
     return label ? POSITIVE_LABEL : NEGATIVE_LABEL;
   }
 
