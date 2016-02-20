@@ -29,7 +29,7 @@ public class BatchServiceTest extends TestCase {
     Gson gson = new Gson();
     InputConfig config = new InputConfig(modelId, "ma");
     IOData d1 = new IOData("positive", "日エンターと資本業務提携");
-    IOData d2 = new IOData("negative", "日エンター第2四半期・通期利益予想を下方修正");
+    IOData d2 = new IOData("negative", "第2四半期・通期利益予想を下方修正");
     String d1Json = gson.toJson(d1);
     String d2Json = gson.toJson(d2);
 
