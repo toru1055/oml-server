@@ -55,7 +55,9 @@ public class LearnerFactory {
     }
     labelMode = Integer.parseInt(conf.getProperty(CONF_KEY_LABEL));
     learnerType = Integer.parseInt(conf.getProperty(CONF_KEY_LEARNER));
-    return newLearner(modelId, labelMode, learnerType);
+    Learner learner = newLearner(modelId, labelMode, learnerType);
+    learner.read();
+    return learner;
   }
 
   /**

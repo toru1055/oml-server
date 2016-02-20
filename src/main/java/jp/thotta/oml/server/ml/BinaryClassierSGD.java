@@ -8,9 +8,7 @@ import java.util.List;
 /**
  * SGDで２クラス分類を学習・推定する学習器.
  */
-public class BinaryClassierSGD
-  extends BaseBinaryClassifier
-  implements Learner {
+public class BinaryClassierSGD extends BaseBinaryClassifier implements Learner {
   double eta = 0.1;
 
   public BinaryClassierSGD(int modelId) {

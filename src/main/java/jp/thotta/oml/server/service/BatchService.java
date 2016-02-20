@@ -37,7 +37,6 @@ public abstract class BatchService implements Runnable {
       while((inJson = in.readLine()) != null) {
         IOData inData = gson.fromJson(inJson, IOData.class);
         List<Feature> x = this.parser.parse(inData.features);
-        System.out.println(x);
         Label inLabel = this.learner.createLabelInstance();
         inLabel.parse(inData.label);
         Label outLabel = exec(inLabel, x);

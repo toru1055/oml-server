@@ -7,6 +7,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import jp.thotta.oml.server.io.Feature;
 import jp.thotta.oml.server.io.Label;
 import jp.thotta.oml.server.io.LabelFactory;
@@ -46,6 +47,8 @@ public abstract class BaseBinaryClassifier extends BaseLearner {
         Double v = Double.parseDouble(s[1]);
         this.w.put(k, v);
       }
+    } catch(FileNotFoundException e) {
+      return;
     } catch(Exception e) {
       e.printStackTrace();
       System.exit(1);
