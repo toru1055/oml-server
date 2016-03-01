@@ -3,6 +3,7 @@ package jp.thotta.oml.server.ml;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Properties;
 import java.util.HashMap;
 import jp.thotta.oml.server.input.LabelFactory;
@@ -48,6 +49,8 @@ public class LearnerFactory {
     Properties conf = new Properties();
     try {
       conf.load(new FileInputStream(filename));
+    } catch(FileNotFoundException e) {
+      return null;
     } catch(Exception e) {
       System.err.println("Cannot open " + filename + ".");
       e.printStackTrace();

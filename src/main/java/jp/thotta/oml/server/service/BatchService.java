@@ -25,6 +25,7 @@ public abstract class BatchService implements Runnable {
   }
 
   public void run() {
+    System.out.println(getClass().getSimpleName() + " was started...");
     try {
       Gson gson = new Gson();
       BufferedReader in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
@@ -33,6 +34,11 @@ public abstract class BatchService implements Runnable {
       InputConfig config = gson.fromJson(configJson, InputConfig.class);
       this.learner = config.getLearner();
       this.parser = config.getParser();
+      //TODO: configがnullかどうかチェック
+      // config.modelIdが存在するかチェック: factoryで生成できるか
+      // config.parserTypeが存在するかチェック: factoryで生成できるか
+      // TODO: 問題がなければlabelModeをclientに返す。問題があればその旨を返す。{status:true, labelMode:1}, {status:false}
+      // TODO: 理想的にはioパッケージはoml-commonリポジトリに分離できるとよい
       String inJson;
       while((inJson = in.readLine()) != null) {
         IOData inData = gson.fromJson(inJson, IOData.class);
@@ -45,6 +51,7 @@ public abstract class BatchService implements Runnable {
         out.println(outJson);
       }
       this.finalizeService();
+      System.out.println(getClass().getSimpleName() + " was end.");
     } catch(IOException e) {
       e.printStackTrace();
     } finally {
