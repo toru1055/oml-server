@@ -34,4 +34,17 @@ public class LabelFactory {
       return null;
     }
   }
+
+  public static String convertModeText(Integer modeId) {
+    switch(modeId) {
+      case BINARY_MODE:
+        return BINARY_MODE_TEXT;
+      case MULTI_MODE:
+        return MULTI_MODE_TEXT;
+      case SCORE_MODE:
+        return SCORE_MODE_TEXT;
+      default:
+        return null;
+    }
+  }
 }

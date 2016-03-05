@@ -1,5 +1,6 @@
 package jp.thotta.oml.server.service;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
 import java.lang.Runnable;
@@ -15,11 +16,24 @@ public class PredictBatchService extends BatchService implements Runnable {
     super(socket);
   }
 
-  public Label exec(Label label, List<Feature> x) {
-    return this.learner.predict(x);
+  protected boolean configureServiceName() {
+    return true;
   }
 
-  public void finalizeService() {
+  protected void executeService() throws IOException {
+    while(true) {
+      String featuresText = comm.recvFeatures();
+      if(featuresText != null) {
+        List<Feature> x = this.parser.parse(featuresText);
+        Label label = this.learner.predict(x);
+        this.comm.sendLabel(label.getText());
+      } else {
+        break;
+      }
+    }
+  }
+
+  protected void finalizeService() {
     return;
   }
 }

@@ -1,12 +1,8 @@
 package jp.thotta.oml.server.service;
 
 import junit.framework.TestCase;
-import com.google.gson.Gson;
 import java.net.Socket;
 import java.net.ServerSocket;
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.io.InputStreamReader;
 import jp.thotta.oml.server.io.*;
 import jp.thotta.oml.server.admin.*;
 import jp.thotta.oml.server.ml.*;
@@ -24,14 +20,10 @@ public class BatchServiceTest extends TestCase {
   }
 
   public void testTrainBatchService() {
-    BufferedReader in;
-    PrintWriter out;
-    Gson gson = new Gson();
-    InputConfig config = new InputConfig(modelId, "ma");
-    IOData d1 = new IOData("positive", "日エンターと資本業務提携");
-    IOData d2 = new IOData("negative", "第2四半期・通期利益予想を下方修正");
-    String d1Json = gson.toJson(d1);
-    String d2Json = gson.toJson(d2);
+    String p_label = "positive";
+    String p_feature = "日エンターと資本業務提携";
+    String n_label = "negative";
+    String n_feature = "第2四半期・通期利益予想を下方修正";
 
     // Train Server
     Thread serverThread1 = new Thread(new Runnable() {
@@ -52,16 +44,20 @@ public class BatchServiceTest extends TestCase {
     // Train Client
     try {
       Socket client = new Socket("localhost", TrainBatchService.PORT);
-      in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-      out = new PrintWriter(client.getOutputStream(), true);
-      out.println(gson.toJson(config));
-      for(int i = 0; i < 10; i++) {
-        out.println(d1Json);
-        in.readLine();
-        System.out.println(d1Json);
-        out.println(d2Json);
-        in.readLine();
-        System.out.println(d2Json);
+      SocketCommunication c_comm = new SocketCommunication(client);
+      c_comm.sendModelId(modelId);
+      c_comm.sendParserType("ma");
+      boolean status = c_comm.recvStatus();
+      String labelMode = c_comm.recvLabelMode();
+      if(status && "binary".equals(labelMode)) {
+        for(int i = 0; i < 10; i++) {
+          c_comm.sendLabel(p_label);
+          c_comm.sendFeatures(p_feature);
+          assertTrue(c_comm.recvStatus());
+          c_comm.sendLabel(n_label);
+          c_comm.sendFeatures(n_feature);
+          assertTrue(c_comm.recvStatus());
+        }
       }
       client.close();
     } catch(Exception e) {
@@ -89,15 +85,17 @@ public class BatchServiceTest extends TestCase {
     try {
       Thread.sleep(1000);
       Socket client2 = new Socket("localhost", PredictBatchService.PORT);
-      in = new BufferedReader(new InputStreamReader(client2.getInputStream()));
-      out = new PrintWriter(client2.getOutputStream(), true);
-      out.println(gson.toJson(config));
-      out.println(d1Json);
-      IOData r1 = gson.fromJson(in.readLine(), IOData.class);
-      assertEquals(r1.label, "positive");
-      out.println(d2Json);
-      IOData r2 = gson.fromJson(in.readLine(), IOData.class);
-      assertEquals(r2.label, "negative");
+      SocketCommunication c_comm2 = new SocketCommunication(client2);
+      c_comm2.sendModelId(modelId);
+      c_comm2.sendParserType("ma");
+      boolean status = c_comm2.recvStatus();
+      String labelMode = c_comm2.recvLabelMode();
+      if("ok".equals(status) && "binary".equals(labelMode)) {
+        c_comm2.sendFeatures(p_feature);
+        assertEquals(c_comm2.recvLabel(), p_label);
+        c_comm2.sendFeatures(p_feature);
+        assertEquals(c_comm2.recvLabel(), n_label);
+      }
       client2.close();
     } catch(Exception e) {
       e.printStackTrace();
@@ -106,6 +104,6 @@ public class BatchServiceTest extends TestCase {
   }
 
   protected void tearDown() {
-    //LearnerFactory.deleteLearner(modelId);
+    LearnerFactory.deleteLearner(modelId);
   }
 }

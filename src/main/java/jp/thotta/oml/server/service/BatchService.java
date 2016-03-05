@@ -3,14 +3,12 @@ package jp.thotta.oml.server.service;
 import java.util.List;
 import java.lang.Runnable;
 import java.net.Socket;
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.io.InputStreamReader;
 import java.io.IOException;
-import com.google.gson.Gson;
 import jp.thotta.oml.server.io.*;
 import jp.thotta.oml.server.ml.Learner;
 import jp.thotta.oml.server.parser.FeatureParser;
+import jp.thotta.oml.server.ml.LearnerFactory;
+import jp.thotta.oml.server.parser.FeatureParserFactory;
 
 /**
  * １度の接続で複数の命令を実行するサービス.
@@ -19,6 +17,7 @@ public abstract class BatchService implements Runnable {
   Socket socket;
   Learner learner;
   FeatureParser parser;
+  SocketCommunication comm;
 
   public BatchService(Socket socket) {
     this.socket = socket;
@@ -27,30 +26,26 @@ public abstract class BatchService implements Runnable {
   public void run() {
     System.out.println(getClass().getSimpleName() + " was started...");
     try {
-      Gson gson = new Gson();
-      BufferedReader in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-      PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-      String configJson = in.readLine();
-      InputConfig config = gson.fromJson(configJson, InputConfig.class);
-      this.learner = config.getLearner();
-      this.parser = config.getParser();
-      //TODO: configがnullかどうかチェック
-      // config.modelIdが存在するかチェック: factoryで生成できるか
-      // config.parserTypeが存在するかチェック: factoryで生成できるか
-      // TODO: 問題がなければlabelModeをclientに返す。問題があればその旨を返す。{status:true, labelMode:1}, {status:false}
-      // TODO: 理想的にはioパッケージはoml-commonリポジトリに分離できるとよい
-      String inJson;
-      while((inJson = in.readLine()) != null) {
-        IOData inData = gson.fromJson(inJson, IOData.class);
-        List<Feature> x = this.parser.parse(inData.features);
-        Label inLabel = this.learner.createLabelInstance();
-        inLabel.parse(inData.label);
-        Label outLabel = exec(inLabel, x);
-        IOData outData = new IOData(outLabel.getText(), null);
-        String outJson = gson.toJson(outData);
-        out.println(outJson);
+      comm = new SocketCommunication(socket);
+      Integer modelId = comm.recvModelId();
+      String parserType = comm.recvParserType();
+      String labelModeText = "ERROR";
+      boolean configStatus = false;
+      if(modelId != null && parserType != null) {
+        this.learner = LearnerFactory.readLearner(modelId);
+        this.parser = FeatureParserFactory.createParser(parserType);
+        if(this.learner != null && this.parser != null) {
+          int labelMode = learner.createLabelInstance().getLabelMode();
+          labelModeText = LabelFactory.convertModeText(labelMode);
+          configStatus = true;
+        }
       }
-      this.finalizeService();
+      comm.sendStatus(configStatus);
+      comm.sendLabelMode(labelModeText);
+      if(configStatus) {
+        this.executeService();
+        this.finalizeService();
+      }
       System.out.println(getClass().getSimpleName() + " was end.");
     } catch(IOException e) {
       e.printStackTrace();
@@ -66,6 +61,7 @@ public abstract class BatchService implements Runnable {
     }
   }
 
-  abstract Label exec(Label label, List<Feature> x);
+  abstract boolean configureServiceName();
+  abstract void executeService() throws IOException;
   abstract void finalizeService();
 }
