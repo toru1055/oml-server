@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
  * Server/Client間での通信を管理するクラス.
  */
 public class SocketCommunication {
+  public static final int TRAIN_BATCH_PORT = 9001;
+  public static final int PREDICT_BATCH_PORT = 9002;
   public static final String SERVICE_TRAIN_BATCH = "train_batch";
   public static final String SERVICE_PREDICT_BATCH = "predict_batch";
   static final String SERVICE_NAME_KEY = "service_name";

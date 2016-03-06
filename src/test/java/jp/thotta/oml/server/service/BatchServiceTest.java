@@ -29,7 +29,7 @@ public class BatchServiceTest extends TestCase {
     Thread serverThread1 = new Thread(new Runnable() {
       public void run() {
         try {
-          ServerSocket server = new ServerSocket(TrainBatchService.PORT);
+          ServerSocket server = new ServerSocket(SocketCommunication.TRAIN_BATCH_PORT);
           Socket socket = server.accept();
           TrainBatchService tbs = new TrainBatchService(socket);
           (new Thread(tbs)).start();
@@ -43,7 +43,7 @@ public class BatchServiceTest extends TestCase {
 
     // Train Client
     try {
-      Socket client = new Socket("localhost", TrainBatchService.PORT);
+      Socket client = new Socket("localhost", SocketCommunication.TRAIN_BATCH_PORT);
       SocketCommunication c_comm = new SocketCommunication(client);
       c_comm.sendModelId(modelId);
       c_comm.sendParserType("ma");
@@ -69,7 +69,7 @@ public class BatchServiceTest extends TestCase {
     Thread serverThread2 = new Thread(new Runnable() {
       public void run() {
         try {
-          ServerSocket server = new ServerSocket(PredictBatchService.PORT);
+          ServerSocket server = new ServerSocket(SocketCommunication.PREDICT_BATCH_PORT);
           Socket socket = server.accept();
           PredictBatchService pbs = new PredictBatchService(socket);
           (new Thread(pbs)).start();
@@ -84,7 +84,7 @@ public class BatchServiceTest extends TestCase {
     // Predict Client
     try {
       Thread.sleep(1000);
-      Socket client2 = new Socket("localhost", PredictBatchService.PORT);
+      Socket client2 = new Socket("localhost", SocketCommunication.PREDICT_BATCH_PORT);
       SocketCommunication c_comm2 = new SocketCommunication(client2);
       c_comm2.sendModelId(modelId);
       c_comm2.sendParserType("ma");

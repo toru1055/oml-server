@@ -1,6 +1,7 @@
 package jp.thotta.oml.server.admin;
 
 import jp.thotta.oml.server.service.*;
+import jp.thotta.oml.server.io.*;
 import java.net.Socket;
 import java.net.ServerSocket;
 import java.util.concurrent.ExecutorService;
@@ -24,13 +25,13 @@ public class ServiceRunner {
       ex = Executors.newFixedThreadPool(BATCH_THREAD_NUM);
       try {
         if(commandMode == CommandMode.TRAIN) {
-          server = new ServerSocket(TrainBatchService.PORT);
+          server = new ServerSocket(SocketCommunication.TRAIN_BATCH_PORT);
           while(true) {
             socket = server.accept();
             ex.execute(new TrainBatchService(socket));
           }
         } else if(commandMode == CommandMode.PREDICT) {
-          server = new ServerSocket(PredictBatchService.PORT);
+          server = new ServerSocket(SocketCommunication.PREDICT_BATCH_PORT);
           while(true) {
             socket = server.accept();
             ex.execute(new PredictBatchService(socket));

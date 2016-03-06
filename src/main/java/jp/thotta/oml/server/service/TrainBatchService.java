@@ -10,8 +10,6 @@ import jp.thotta.oml.server.io.*;
  * バッチ処理で学習するサービス.
  */
 public class TrainBatchService extends BatchService implements Runnable {
-  public static final int PORT = 9001;
-
   public TrainBatchService(Socket socket) {
     super(socket);
   }

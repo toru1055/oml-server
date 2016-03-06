@@ -10,8 +10,6 @@ import jp.thotta.oml.server.io.*;
  * バッチ処理で予測するサービス.
  */
 public class PredictBatchService extends BatchService implements Runnable {
-  public static final int PORT = 9002;
-
   public PredictBatchService(Socket socket) {
     super(socket);
   }
