@@ -8,9 +8,9 @@ import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import jp.thotta.oml.server.io.Feature;
-import jp.thotta.oml.server.io.Label;
-import jp.thotta.oml.server.io.LabelFactory;
+import jp.thotta.oml.client.io.Feature;
+import jp.thotta.oml.client.io.Label;
+import jp.thotta.oml.client.io.LabelFactory;
 import jp.thotta.oml.server.admin.PathManager;
 
 /**

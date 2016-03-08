@@ -3,7 +3,7 @@ package jp.thotta.oml.server.service;
 import junit.framework.TestCase;
 import java.net.Socket;
 import java.net.ServerSocket;
-import jp.thotta.oml.server.io.*;
+import jp.thotta.oml.client.io.*;
 import jp.thotta.oml.server.admin.*;
 import jp.thotta.oml.server.ml.*;
 

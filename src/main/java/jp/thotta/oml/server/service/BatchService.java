@@ -4,7 +4,7 @@ import java.util.List;
 import java.lang.Runnable;
 import java.net.Socket;
 import java.io.IOException;
-import jp.thotta.oml.server.io.*;
+import jp.thotta.oml.client.io.*;
 import jp.thotta.oml.server.ml.Learner;
 import jp.thotta.oml.server.parser.FeatureParser;
 import jp.thotta.oml.server.ml.LearnerFactory;

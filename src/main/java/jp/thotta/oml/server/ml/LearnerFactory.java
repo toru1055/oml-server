@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Properties;
 import java.util.HashMap;
-import jp.thotta.oml.server.io.LabelFactory;
+import jp.thotta.oml.client.io.*;
 import jp.thotta.oml.server.admin.PathManager;
 
 /**

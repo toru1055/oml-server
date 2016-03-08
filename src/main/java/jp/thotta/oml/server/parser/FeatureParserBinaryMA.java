@@ -5,7 +5,7 @@ import com.atilika.kuromoji.ipadic.Tokenizer;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
-import jp.thotta.oml.server.io.Feature;
+import jp.thotta.oml.client.io.Feature;
 
 /**
  * テキストを形態素解析して特徴ベクトルに変換するパーサ.

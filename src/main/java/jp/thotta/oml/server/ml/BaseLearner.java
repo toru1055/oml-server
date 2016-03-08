@@ -1,9 +1,7 @@
 package jp.thotta.oml.server.ml;
 
 import jp.thotta.oml.server.admin.PathManager;
-import jp.thotta.oml.server.io.Feature;
-import jp.thotta.oml.server.io.Label;
-import jp.thotta.oml.server.io.LabelFactory;
+import jp.thotta.oml.client.io.*;
 import java.util.List;
 
 /**

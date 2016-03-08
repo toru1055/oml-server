@@ -2,7 +2,7 @@ package jp.thotta.oml.server.parser;
 
 import junit.framework.TestCase;
 import java.util.List;
-import jp.thotta.oml.server.io.Feature;
+import jp.thotta.oml.client.io.Feature;
 
 public class FeatureParserTest extends TestCase {
   public void testFeatureParserBinaryMA() {

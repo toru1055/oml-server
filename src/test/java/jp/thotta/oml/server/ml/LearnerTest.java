@@ -3,7 +3,7 @@ package jp.thotta.oml.server.ml;
 import junit.framework.TestCase;
 import java.util.ArrayList;
 import jp.thotta.oml.server.admin.PathManager;
-import jp.thotta.oml.server.io.*;
+import jp.thotta.oml.client.io.*;
 
 public class LearnerTest extends TestCase {
   int modelId;

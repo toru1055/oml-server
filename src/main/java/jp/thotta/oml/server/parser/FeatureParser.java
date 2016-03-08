@@ -1,7 +1,7 @@
 package jp.thotta.oml.server.parser;
 
 import java.util.List;
-import jp.thotta.oml.server.io.Feature;
+import jp.thotta.oml.client.io.Feature;
 
 /**
  * 特徴ベクトルのパーサインターフェイス.

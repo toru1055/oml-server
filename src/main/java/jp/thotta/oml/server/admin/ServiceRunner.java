@@ -1,7 +1,7 @@
 package jp.thotta.oml.server.admin;
 
 import jp.thotta.oml.server.service.*;
-import jp.thotta.oml.server.io.*;
+import jp.thotta.oml.client.io.*;
 import java.net.Socket;
 import java.net.ServerSocket;
 import java.util.concurrent.ExecutorService;
