@@ -98,6 +98,10 @@ public class LearnerFactory {
       if(learnerType == SGD_TYPE) {
         return new BinaryClassierSGD(modelId);
       }
+    } else if(labelMode == LabelFactory.SCORE_MODE) {
+      if(learnerType == SGD_TYPE) {
+        return new LinearRegressionSGD(modelId);
+      }
     }
     return null;
   }
