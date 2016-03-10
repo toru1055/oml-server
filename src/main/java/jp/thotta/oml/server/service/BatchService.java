@@ -43,8 +43,11 @@ public abstract class BatchService implements Runnable {
       comm.sendStatus(configStatus);
       comm.sendLabelMode(labelModeText);
       if(configStatus) {
+        System.out.println("modelId: " + modelId + ", labelMode: " + labelModeText);
         this.executeService();
         this.finalizeService();
+      } else {
+        System.out.println("Error at configure.");
       }
       System.out.println(getClass().getSimpleName() + " was end.");
     } catch(IOException e) {

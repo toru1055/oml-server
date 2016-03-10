@@ -14,6 +14,7 @@ public class ModelCreator {
     String labelMode = args[0];
     String learnerType = args[1];
     PathManager.init();
-    LearnerFactory.createLearner(labelMode, learnerType);
+    Learner learner = LearnerFactory.createLearner(labelMode, learnerType);
+    System.out.println("Model creation was completed: modelId = " + learner.getModelId());
   }
 }
