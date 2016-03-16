@@ -8,7 +8,7 @@ import java.util.List;
  * http://www.ms.k.u-tokyo.ac.jp/2014/OnlineLearningReview-jp.pdf
  */
 public class LinearRegressionSGD extends BaseLinearRegression implements Learner {
-  double eta = 0.1;
+  double eta = 0.01;
 
   public LinearRegressionSGD(int modelId) {
     super(modelId);
@@ -18,7 +18,7 @@ public class LinearRegressionSGD extends BaseLinearRegression implements Learner
     this.eta = eta;
   }
 
-  public Double scoring(List<Feature> x) {
+  Double scoring(List<Feature> x) {
     double wx = 0.0;
     for(Feature xi : x) {
       wx += wget(xi.key()) * xi.value();

@@ -26,12 +26,6 @@ public interface Learner {
   public Label predict(List<Feature> features);
 
   /**
-   * 未知の特徴ベクトルのスコアを算出.
-   * @param features 特徴ベクトル
-   */
-  public Double scoring(List<Feature> features);
-
-  /**
    * 学習モデルを保存.
    */
   public void save();

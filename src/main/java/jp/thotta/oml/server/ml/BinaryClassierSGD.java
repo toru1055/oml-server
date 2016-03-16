@@ -17,7 +17,7 @@ public class BinaryClassierSGD extends BaseBinaryClassifier implements Learner {
     this.eta = eta;
   }
 
-  public Double scoring(List<Feature> x) {
+  Double scoring(List<Feature> x) {
     double wx = 0.0;
     for(Feature xi : x) {
       wx += wget(xi.key()) * xi.value();

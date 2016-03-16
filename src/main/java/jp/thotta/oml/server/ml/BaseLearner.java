@@ -26,7 +26,6 @@ public abstract class BaseLearner implements Learner {
 
   abstract public void train(Label label, List<Feature> features);
   abstract public Label predict(List<Feature> features);
-  abstract public Double scoring(List<Feature> features);
   abstract public void save();
   abstract public void read();
 }
