@@ -11,7 +11,7 @@ MODEL_CREATOR_CLASS = "jp.thotta.oml.server.admin.ModelCreator"
 SERVICE_RUNNER_CLASS = "jp.thotta.oml.server.admin.ServiceRunner"
 
 def usage():
-  print "[Usage] oml-server create <label-mode>  <learner-type>"
+  print "[Usage] oml-server create <label-mode> <learner-type>"
   print "[Usage] oml-server run batch|online train|predict"
   quit()
 

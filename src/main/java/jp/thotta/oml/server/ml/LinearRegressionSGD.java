@@ -8,7 +8,7 @@ import java.util.List;
  * http://www.ms.k.u-tokyo.ac.jp/2014/OnlineLearningReview-jp.pdf
  */
 public class LinearRegressionSGD extends BaseLinearRegression implements Learner {
-  double eta = 0.01;
+  double eta = 0.025;
 
   public LinearRegressionSGD(int modelId) {
     super(modelId);
