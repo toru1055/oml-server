@@ -66,4 +66,17 @@ public class PathManager {
   public static String modelFile(int modelId) {
     return modelDirectory() + "/" + String.valueOf(modelId);
   }
+
+  public static String tfFile(int modelId) {
+    return modelDirectory() + "/" + String.valueOf(modelId) + ".tf";
+  }
+
+  public static String dfFile(int modelId) {
+    return modelDirectory() + "/" + String.valueOf(modelId) + ".df";
+  }
+
+  public static String thresholdFile(int modelId) {
+    return modelDirectory() + "/" + String.valueOf(modelId) + ".threshold";
+  }
+
 }

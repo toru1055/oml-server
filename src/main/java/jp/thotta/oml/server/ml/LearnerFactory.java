@@ -14,7 +14,9 @@ import jp.thotta.oml.server.admin.PathManager;
  */
 public class LearnerFactory {
   public static final int SGD_TYPE = 1;
+  public static final int TFIDF_TYPE = 2;
   public static final String SGD_TYPE_TEXT = "sgd";
+  public static final String TFIDF_TYPE_TEXT = "tfidf";
   static final String CONF_KEY_LABEL = "label_mode";
   static final String CONF_KEY_LEARNER = "learner_type";
 
@@ -73,6 +75,9 @@ public class LearnerFactory {
     File mfile = new File(mfilename);
     afile.delete();
     mfile.delete();
+    new File(PathManager.tfFile(modelId)).delete();
+    new File(PathManager.dfFile(modelId)).delete();
+    new File(PathManager.thresholdFile(modelId)).delete();
   }
 
   static void saveAttributes(int modelId, 
@@ -102,6 +107,10 @@ public class LearnerFactory {
       if(learnerType == SGD_TYPE) {
         return new LinearRegressionSGD(modelId);
       }
+    } else if(labelMode == LabelFactory.MULTI_MODE) {
+      if(learnerType == TFIDF_TYPE) {
+        return new MultiClassifierTFIDF(modelId);
+      }
     }
     return null;
   }
@@ -109,6 +118,7 @@ public class LearnerFactory {
   static Integer convertTypeId(String learnerType) {
     HashMap<String, Integer> m = new HashMap<String, Integer>();
     m.put(SGD_TYPE_TEXT, SGD_TYPE);
+    m.put(TFIDF_TYPE_TEXT, TFIDF_TYPE);
     return m.get(learnerType);
   }
 

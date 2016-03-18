@@ -1,6 +1,5 @@
 package jp.thotta.oml.server.ml;
 
-import jp.thotta.oml.client.io.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -8,20 +7,35 @@ import java.util.HashMap;
 import java.util.Collections;
 import java.util.Comparator;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+
+import jp.thotta.oml.client.io.*;
+import jp.thotta.oml.server.admin.PathManager;
+import jp.thotta.oml.server.model.*;
+
 public class MultiClassifierTFIDF
   extends BaseLearner implements Learner {
   public static final int TERM_MAX = 100;
+  public static final String TOTAL_DOC_SIZE = "\001TOTAL_DOCUMENT_SIZE\001";
 
-  Map<String, Integer> df;
-  Map<String, Map<String, Integer>> tf;
+  DocumentFrequency df;
+  TermFrequency tf;
+  ThresholdMap thresholdMap;
   Map<String, Map<String, Double>> invertedIndex;
 
   public MultiClassifierTFIDF(int modelId) {
     super(modelId);
-    this.df = new HashMap<String, Integer>();
-    this.tf = new HashMap<String, Map<String, Integer>>();
+    this.df = new DocumentFrequency(modelId);
+    this.tf = new TermFrequency(modelId);
+    this.thresholdMap = new ThresholdMap(modelId);
     this.invertedIndex = new HashMap<String, Map<String, Double>>();
     this.labelMode = LabelFactory.MULTI_MODE;
+    this.df.put(TOTAL_DOC_SIZE, 0);
   }
 
   /**
@@ -31,13 +45,15 @@ public class MultiClassifierTFIDF
     Map<String, Double> scoreMap = new HashMap<String, Double>();
     Map<String, Double> featureMap = normalize(numerize(x), 30);
     for(String term : featureMap.keySet()) {
-      Map<String, Double> labelMap = invertedIndex.get(term);
-      for(String label : labelMap.keySet()) {
-        double val = featureMap.get(term) * labelMap.get(label);
-        if(scoreMap.containsKey(label)) {
-          scoreMap.put(label, scoreMap.get(label) + val);
-        } else {
-          scoreMap.put(label, val);
+      if(invertedIndex.containsKey(term)) {
+        Map<String, Double> labelMap = invertedIndex.get(term);
+        for(String label : labelMap.keySet()) {
+          double val = featureMap.get(term) * labelMap.get(label);
+          if(scoreMap.containsKey(label)) {
+            scoreMap.put(label, scoreMap.get(label) + val);
+          } else {
+            scoreMap.put(label, val);
+          }
         }
       }
     }
@@ -84,6 +100,7 @@ public class MultiClassifierTFIDF
       }
     }
     norm = Math.sqrt(norm);
+    i = 0;
     for(String k : sortedKeys) {
       if(i++ < size) {
         if(norm > 0.0) {
@@ -99,10 +116,17 @@ public class MultiClassifierTFIDF
   }
 
   double idf(String term) {
+    int df_max = 3;
+    if(df.get(TOTAL_DOC_SIZE) > df_max) {
+      df_max = df.get(TOTAL_DOC_SIZE);
+    }
     if(df.containsKey(term)) {
-      return Math.log(4000.0 / (1 + df.get(term)));
+      if(df.get(term) > df_max) {
+        df_max = 1 + df.get(term);
+      }
+      return Math.log((double)df_max / (1 + df.get(term)));
     } else {
-      return Math.log(4000.0);
+      return Math.log((double)df_max);
     }
   }
 
@@ -121,63 +145,83 @@ public class MultiClassifierTFIDF
         }
       }
     });
-    return null;
+    return keys;
   }
 
   public void train(Label label, List<Feature> features) {
-    // tf, dfを更新
-    // scoringで取得したmapで閾値パラメータを更新
+    String l = label.getLabel();
+    Map<String, Double> scoreMap = scoring(features);
+    Threshold threshold;
+    if(thresholdMap.containsKey(l)) {
+      threshold = thresholdMap.get(l);
+    } else {
+      threshold = new Threshold(l);
+      thresholdMap.put(l, threshold);
+    }
+    threshold.addScoreMap(scoreMap);
+    Map<String, Integer> labelTF;
+    if(tf.containsKey(l)) {
+      labelTF = tf.get(l);
+    } else {
+      labelTF = new HashMap<String, Integer>();
+      df.put(TOTAL_DOC_SIZE, df.get(TOTAL_DOC_SIZE) + 1);
+    }
+    for(Feature f : features) {
+      String term = f.key();
+      int freq = (int)(double)f.value();
+      if(labelTF.containsKey(term)) {
+        freq = freq + labelTF.get(term);
+      } else {
+        if(df.containsKey(term)) {
+          df.put(term, df.get(term) + 1);
+        } else {
+          df.put(term, 1);
+        }
+      }
+      labelTF.put(term, freq);
+    }
+    tf.put(l, labelTF);
   }
 
   public Label predict(List<Feature> features) {
-    // scoringして値が最大のlabelを返す.
-    return null;
+    Map<String, Double> scoreMap = scoring(features);
+    double maxScore = 0.0;
+    String maxLabel = null;
+    for(String l : scoreMap.keySet()) {
+      Double score = scoreMap.get(l);
+      if(score > maxScore) {
+        maxScore = score;
+        maxLabel = l;
+      }
+    }
+    MultiClassLabel label = new MultiClassLabel();
+    label.parse(maxLabel);
+    return label;
   }
 
   public void read() {
-    // tf, dfをread
-    //  - path: model/$modelId/{tf,df,threshold}
-    // tfidfの通常indexを作成.
-    // label毎term数の制限と正規化.
-    // 転置indexを作成
-    // 閾値パラメータをread
+    tf.read();
+    df.read();
+    thresholdMap.read();
+    for(String l: tf.keySet()) {
+      Map<String, Double> tfidf = normalize(numerize(tf.get(l)), TERM_MAX);
+      for(String term : tfidf.keySet()) {
+        Double value = tfidf.get(term);
+        Map<String, Double> labelVector = null;
+        if(invertedIndex.containsKey(term)) {
+          labelVector = invertedIndex.get(term);
+        } else {
+          labelVector = new HashMap<String, Double>();
+          invertedIndex.put(term, labelVector);
+        }
+        labelVector.put(l, value);
+      }
+    }
   }
 
   public void save() {
-    // readするものをsave
-  }
-
-  class Threshold {
-    String label;
-    Integer posNum;
-    Double posMean;
-    Double posMin;
-    Integer negNum;
-    Double negMean;
-    Double negMax;
-
-    public Threshold(String label) {
-      this.label = label;
-    }
-
-    public void set(Integer posNum, Double posMean, Double posMin,
-                    Integer negNum, Double negMean, Double negMax) {
-      this.posNum = posNum;
-      this.posMean = posMean;
-      this.posMin = posMin;
-      this.negNum = negNum;
-      this.negMean = negMean;
-      this.negMax = negMax;
-    }
-
-    public void addPositive(Double score) {
-    }
-
-    public void addNegative(Double score) {
-    }
-
-    public Double getThreshold() {
-      return null;
-    }
+    tf.save();
+    df.save();
+    thresholdMap.save();
   }
 }

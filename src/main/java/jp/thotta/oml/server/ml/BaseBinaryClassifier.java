@@ -47,6 +47,7 @@ public abstract class BaseBinaryClassifier extends BaseLearner {
         Double v = Double.parseDouble(s[1]);
         this.w.put(k, v);
       }
+      br.close();
     } catch(FileNotFoundException e) {
       return;
     } catch(Exception e) {
