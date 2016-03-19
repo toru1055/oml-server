@@ -18,4 +18,9 @@ public class FeatureParserTest extends TestCase {
     FeatureParser p = FeatureParserFactory.createParser("ma");
     assertEquals(p.parse("箸と寿司").size(), 2);
   }
+
+  public void testFeatureParserDate() {
+    FeatureParser p = FeatureParserFactory.createParser("ma");
+    System.out.println(p.parse("箸で寿司が食べたいが、箸で寿司は食べられない"));
+  }
 }
