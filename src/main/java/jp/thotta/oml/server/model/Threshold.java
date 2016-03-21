@@ -5,8 +5,8 @@ import java.util.Map;
 public class Threshold {
   public String label;
   Integer posNum = 0;
-  Double posMean = 0.0;
-  Double posMin = 0.0;
+  Double posMean = 1.0;
+  Double posMin = 1.0;
   Integer negNum = 0;
   Double negMean = 0.0;
   Double negMax = 0.0;

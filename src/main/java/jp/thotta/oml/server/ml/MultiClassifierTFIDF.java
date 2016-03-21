@@ -20,7 +20,8 @@ import jp.thotta.oml.server.model.*;
 
 public class MultiClassifierTFIDF
   extends BaseLearner implements Learner {
-  public static final int TERM_MAX = 100;
+  public static final int INDEX_TERM_MAX = 30;
+  public static final int QUERY_TERM_MAX = 10;
   public static final String TOTAL_DOC_SIZE = "\001TOTAL_DOCUMENT_SIZE\001";
 
   DocumentFrequency df;
@@ -43,7 +44,7 @@ public class MultiClassifierTFIDF
    */
   Map<String, Double> scoring(List<Feature> x) {
     Map<String, Double> scoreMap = new HashMap<String, Double>();
-    Map<String, Double> featureMap = normalize(numerize(x), 30);
+    Map<String, Double> featureMap = normalize(numerize(x), QUERY_TERM_MAX);
     for(String term : featureMap.keySet()) {
       if(invertedIndex.containsKey(term)) {
         Map<String, Double> labelMap = invertedIndex.get(term);
@@ -116,17 +117,25 @@ public class MultiClassifierTFIDF
   }
 
   double idf(String term) {
-    int df_max = 3;
+    double idf = 0.0;
+    int df_max = 2;
     if(df.get(TOTAL_DOC_SIZE) > df_max) {
       df_max = df.get(TOTAL_DOC_SIZE);
     }
     if(df.containsKey(term)) {
-      if(df.get(term) > df_max) {
+      if((df.get(term) + 1) > df_max) {
         df_max = 1 + df.get(term);
       }
-      return Math.log((double)df_max / (1 + df.get(term)));
+      idf = Math.log((double)df_max / (1 + df.get(term)));
     } else {
-      return Math.log((double)df_max);
+      idf = Math.log((double)df_max);
+    }
+    if(idf < 0.0) {
+      System.err.println("idf is minus: term = " + term + ", df = " + df.get(term));
+      System.err.println("df_max " + df_max);
+      return 0.0;
+    } else {
+      return idf;
     }
   }
 
@@ -138,10 +147,10 @@ public class MultiClassifierTFIDF
     Collections.sort(keys, new Comparator<String>() {
       @Override
       public int compare(String k1, String k2) {
-        if(m.get(k1) != m.get(k2)) {
+        if(!m.get(k1).equals(m.get(k2))) {
           return m.get(k1) > m.get(k2) ? -1 : 1;
         } else {
-          return k1.compareTo(k2);
+          return k2.compareTo(k1);
         }
       }
     });
@@ -204,7 +213,7 @@ public class MultiClassifierTFIDF
     df.read();
     thresholdMap.read();
     for(String l: tf.keySet()) {
-      Map<String, Double> tfidf = normalize(numerize(tf.get(l)), TERM_MAX);
+      Map<String, Double> tfidf = normalize(numerize(tf.get(l)), INDEX_TERM_MAX);
       for(String term : tfidf.keySet()) {
         Double value = tfidf.get(term);
         Map<String, Double> labelVector = null;
