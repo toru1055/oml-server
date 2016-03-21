@@ -1,0 +1,5 @@
+#!/bin/bash
+exe="bin/oml-server run batch train"
+pidFile="train-batch.pid"
+
+. bin/base-daemon.sh $1

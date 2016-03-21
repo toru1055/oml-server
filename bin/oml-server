@@ -31,3 +31,4 @@ else:
   usage()
 
 os.system(java_exec)
+#TODO: os.execvを使ってforkしないように

@@ -1,0 +1,5 @@
+#!/bin/bash
+exe="bin/oml-server run batch predict"
+pidFile="predict-batch.pid"
+
+. bin/base-daemon.sh $1
