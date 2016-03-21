@@ -43,7 +43,7 @@ public class MultiClassifierTFIDFTest extends TestCase {
     learner.save();
     Learner learner2 = LearnerFactory.readLearner(modelId);
     learner2.read();
-    assertEquals(learner2.predict(f2).getLabel(), "label2");
+    assertEquals(learner2.predict(f2).getLabel(), null);
     learner2.train(l1, f2);
     learner2.train(l2, f2);
     learner2.train(l3, f3);

@@ -204,7 +204,12 @@ public class MultiClassifierTFIDF
       }
     }
     MultiClassLabel label = new MultiClassLabel();
-    label.parse(maxLabel);
+    Threshold t = thresholdMap.get(maxLabel);
+    if(t != null && maxScore > t.getThreshold()) {
+      label.parse(maxLabel);
+    } else {
+      label.parse(null);
+    }
     return label;
   }
 

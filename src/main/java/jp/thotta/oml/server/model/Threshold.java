@@ -68,6 +68,10 @@ public class Threshold {
   }
 
   public Double getThreshold() {
-    return posMean;
+    if(posNum >= 2) {
+      return (posMean + negMean) / 2;
+    } else {
+      return 1.0;
+    }
   }
 }
