@@ -1,5 +1,8 @@
 #!/bin/bash
-exe="bin/oml-server run batch predict"
-pidFile="predict-batch.pid"
+dir=`dirname $0`
+jar="$dir/oml-server-1.0-SNAPSHOT-jar-with-dependencies.jar"
+class="jp.thotta.oml.server.admin.ServiceRunner"
+exe="java -cp $jar $class batch predict"
+pidFile="$dir/predict-batch.pid"
 
-. bin/base-daemon.sh $1
+. $dir/base-daemon.sh $1

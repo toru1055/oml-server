@@ -2,6 +2,7 @@
 # coding: UTF-8
 import sys
 import os
+import subprocess
 
 BIN_DIR = os.path.dirname(__file__)
 HOME_DIR = "%(BIN_DIR)s/.." % locals()
@@ -24,11 +25,10 @@ command_arg1 = sys.argv[2]
 command_arg2 = sys.argv[3]
 
 if(command == "create"):
-  java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(MODEL_CREATOR_CLASS)s %(command_arg1)s %(command_arg2)s" % locals()
+  java_exec = "/usr/bin/java -cp %(JAR_FILE)s %(MODEL_CREATOR_CLASS)s %(command_arg1)s %(command_arg2)s" % locals()
 elif(command == "run"):
-  java_exec = "cd %(HOME_DIR)s && java -cp %(JAR_FILE)s %(SERVICE_RUNNER_CLASS)s %(command_arg1)s %(command_arg2)s" % locals()
+  java_exec = "/usr/bin/java -cp %(JAR_FILE)s %(SERVICE_RUNNER_CLASS)s %(command_arg1)s %(command_arg2)s" % locals()
 else:
   usage()
 
 os.system(java_exec)
-#TODO: os.execvを使ってforkしないように
