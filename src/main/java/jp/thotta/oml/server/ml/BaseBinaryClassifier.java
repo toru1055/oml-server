@@ -30,7 +30,8 @@ public abstract class BaseBinaryClassifier extends BaseLearner {
    */
   protected double wget(String k) {
     if(!w.containsKey(k)) {
-      w.put(k, Math.random());
+      //w.put(k, Math.random());
+      w.put(k, 0.0);
     }
     return w.get(k);
   }

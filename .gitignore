@@ -10,3 +10,4 @@ buildNumber.properties
 *.swp
 data/
 nohup.out
+bin/*.pid
